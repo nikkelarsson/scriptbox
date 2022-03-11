@@ -13,7 +13,7 @@ setup(
     name="scriptbox",  # Required
 
     # Version?
-    version="0.1.0a0",  # Required
+    version="0.1.0rc1",  # Required
 
     # What does your project do?
     description="Small everyday utilities for variety of tasks",  # Optional

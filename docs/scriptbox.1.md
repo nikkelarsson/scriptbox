@@ -1,4 +1,4 @@
-% SCRIPTBOX(1) scriptbox 0.1.0a0  
+% SCRIPTBOX(1) scriptbox 0.1.0rc1  
 % Niklas Larsson  
 % Feb 2022  
 
