@@ -1,3 +1,12 @@
+<div align="center">
+
+[![OS](https://img.shields.io/badge/OS-Linux|OSX-informational?style=for-the-badge)](https://www.python.org/downloads/release/python-3100/)
+[![Python](https://img.shields.io/badge/Python-3.10-informational?style=for-the-badge)](https://www.python.org/downloads/release/python-3100/)
+[![Release](https://img.shields.io/badge/Release-0.1.0rc1-blueviolet?style=for-the-badge)](https://github.com/nikkelarsson/bargets/releases/tag/v0.1.0rc2)
+[![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](https://github.com/nikkelarsson/bargets/blob/dev/LICENSE.txt)
+
+</div>
+
 # About
 **scriptbox** is a collection of small utilities for everyday tasks.
 As development is still in very early stages, **scriptbox** has only one utility
