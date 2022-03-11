@@ -7,6 +7,9 @@ venv/
 # Setuptools distribution folder
 dist/
 
+# Build folder
+build/
+
 # Man-pages
 docs/*.1
 

@@ -19,8 +19,9 @@ class Screenshot:
     def __init__(self, language: str, fmt: str) -> None:
         self._lng: str = language
         self._fmt: str = fmt
-        self._dst: str = self._save(self._lng)
-        self._id: str = self._identifier(self._lng)
+        self._base: str = self._set_base()
+        self._dst: str = self._set_dst()
+        self._id: str = self._set_identifier()
 
     @property
     def photo_fmt(self) -> str:
@@ -52,41 +53,63 @@ class Screenshot:
         """Set new identifier."""
         raise NotImplementedError("Method not implemented yet")
 
-    def _save(self, language: str) -> str:
-        """Determine where to save screenshots."""
+    def _set_base(self) -> str:
+        """Set base dir where to save screenshots."""
 
         dst: dict[str, str] = {
             "fi_FI.UTF-8": str(pathlib.Path.home()) + "/Kuvat/Näytönkaappaukset",
             "en_US.UTF-8": str(pathlib.Path.home()) + "/Pictures/Screenshots",
         }
 
-        return dst.get(language, dst.get("en_US.UTF-8"))
+        # Make the base dir if it doesn't already exist
+        base: str = dst.get(self._lng, dst.get("en_US.UTF-8"))
+        pathlib.Path(base).mkdir(parents=True, exist_ok=True)
 
-    def _identifier(self, language: str) -> str:
-        """Determine identifier to use in photo name."""
+        return base
+
+    def _set_dst(self) -> str:
+        """Set dir, based on date, where to actually store screenshots."""
+
+        # Using format "[month]-[day]-[year]" as a name for
+        # each day's screenshots makes sense, as it is easy
+        # then to list and search screenshots by date
+        base: str = self._base
+        date: str = datetime.datetime.now().strftime("%d-%m-%Y, %A")
+
+        # Make dir for the day if it doesn't already exist
+        pathlib.Path(f"{base}/{date}").mkdir(parents=True, exist_ok=True)
+
+        return f"{base}/{date}"
+
+    def _set_identifier(self) -> str:
+        """Set identifier to use in screenshot's filename."""
 
         identifier: dict[str, str] = {
             "fi_FI.UTF-8": "näytönkaappaus",
             "en_US.UTF-8": "screenshot",
         }
 
-        return identifier.get(language, identifier.get("en_US.UTF-8"))
+        return identifier.get(self._lng, identifier.get("en_US.UTF-8"))
 
     def _name(self) -> str:
         """Name a screenshot."""
-        pathlib.Path(self._dst).mkdir(parents=True, exist_ok=True)
-        date: str = datetime.datetime.now().strftime("[%H:%M:%S] [%-d-%-m-%Y]")
+
+        date: str = datetime.datetime.now().strftime("[%H:%M:%S]")
         filename: str = f"{date} {self._id}.{self._fmt}"
-        path: str = str(pathlib.PurePath(self._dst, filename))
+        path: str = f"{self._dst}/{filename}"
+
         return path
 
-    def capture(self) -> None:
+    def capture(self) -> int:
         """Take a screenshot."""
+
         cmd: list = ["import", "-window", "root", self._name()]
+
         try:
             subprocess.run(cmd)
+            return 0
         except FileNotFoundError:
-            pass
+            return 1
 
 
 class ScreenshotNotification:
@@ -150,19 +173,19 @@ def main() -> None:
     """Main function."""
 
     # Settings
-    fmt: str = "png"
+    format: str = "png"
     language: str = os.environ["LANG"]
     notifications: bool = True
 
     # TODO: read config
 
     # Set up screenshot & notification devices
-    screenshot: Screenshot = Screenshot(language, fmt)
+    screenshot: Screenshot = Screenshot(language, format)
     notification: ScreenshotNotification = ScreenshotNotification(language)
 
     # Take screenshot
-    screenshot.capture()
-    if notifications:
+    status: int = screenshot.capture()
+    if status == 0 and notifications:
         notification.show()
 
 

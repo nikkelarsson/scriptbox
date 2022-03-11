@@ -27,6 +27,8 @@ upload:
 clean:
 	@echo "Cleaning distribution packages..."
 	rm -rf dist/
+	rm -rf build/
+	rm -rf $(PROG).egg-info
 
 .PHONY: man
 man:
